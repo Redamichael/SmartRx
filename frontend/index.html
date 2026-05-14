@@ -1,0 +1,1623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmartRx AI — Ethiopia Digital Health</title>
+
+<!-- Bootstrap 5 -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- Bootstrap Icons -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<!-- Leaflet CSS -->
+<link href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet">
+
+<style>
+:root {
+  --smartrx-primary:  #1D9E75;
+  --smartrx-dark:     #0F6E56;
+  --smartrx-light:    #E1F5EE;
+  --smartrx-accent:   #534AB7;
+  --smartrx-warning:  #E8593C;
+  --smartrx-yellow:   #EF9F27;
+  --sidebar-width:    230px;
+}
+
+body { background: #F5F6FA; font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; }
+
+/* ── Sidebar ──────────────────────────────────── */
+#sidebar {
+  position: fixed; top:0; left:0; bottom:0;
+  width: var(--sidebar-width); background: #0F6E56;
+  color: #fff; z-index: 100; overflow-y: auto;
+}
+.sidebar-brand {
+  padding: 18px 16px 12px;
+  border-bottom: 1px solid rgba(255,255,255,.12);
+}
+.sidebar-brand h1 { font-size:17px; font-weight:700; margin:0; letter-spacing:-.3px; }
+.sidebar-brand span { font-size:11px; opacity:.7; }
+.nav-section { font-size:10px; font-weight:600; letter-spacing:.08em;
+  opacity:.55; padding: 16px 16px 4px; text-transform:uppercase; }
+.nav-item-btn {
+  display:flex; align-items:center; gap:9px; width:100%;
+  background:none; border:none; color:#fff; text-align:left;
+  padding: 8px 16px; font-size:13px; border-radius:0;
+  opacity:.8; cursor:pointer; transition: background .15s, opacity .15s;
+}
+.nav-item-btn:hover  { background: rgba(255,255,255,.1); opacity:1; }
+.nav-item-btn.active { background: rgba(255,255,255,.18); opacity:1; font-weight:600; }
+.nav-item-btn i { font-size:16px; flex-shrink:0; }
+
+/* ── Main area ────────────────────────────────── */
+#main { margin-left: var(--sidebar-width); min-height: 100vh; }
+
+.topbar {
+  background: #fff; border-bottom: 1px solid #E8EAF0;
+  padding: 12px 24px; display:flex; align-items:center; justify-content:space-between;
+  position: sticky; top:0; z-index:50;
+}
+.topbar h2 { font-size:16px; font-weight:600; margin:0; color:#1a1a2e; }
+.topbar-right { display:flex; align-items:center; gap:12px; }
+
+.view { display:none; padding: 20px 24px; }
+.view.active { display:block; }
+
+/* ── KPI Cards ────────────────────────────────── */
+.kpi-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(160px,1fr)); gap:14px; margin-bottom:20px; }
+.kpi-card {
+  background:#fff; border-radius:10px; padding:16px;
+  border-left: 4px solid var(--smartrx-primary);
+  box-shadow: 0 1px 4px rgba(0,0,0,.06);
+}
+.kpi-card.warn  { border-left-color: var(--smartrx-warning); }
+.kpi-card.alert { border-left-color: #E24B4A; }
+.kpi-card.info  { border-left-color: var(--smartrx-accent); }
+.kpi-card .num  { font-size:26px; font-weight:700; color:#1a1a2e; line-height:1; }
+.kpi-card .lbl  { font-size:11px; color:#6B7280; margin-top:4px; font-weight:500; }
+.kpi-card .sub  { font-size:11px; color:#9CA3AF; margin-top:2px; }
+
+/* ── Content cards ────────────────────────────── */
+.card-box {
+  background:#fff; border-radius:10px;
+  padding:16px 20px; margin-bottom:16px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.06);
+}
+.card-box h5 { font-size:13px; font-weight:600; margin-bottom:14px; color:#1a1a2e; }
+
+/* ── Map ──────────────────────────────────────── */
+#pharmacy-map { height: 420px; border-radius:8px; z-index:1; }
+#patient-map  { height: 360px; border-radius:8px; z-index:1; }
+
+/* ── Badges ───────────────────────────────────── */
+.badge-out      { background:#FEE2E2; color:#B91C1C; }
+.badge-critical { background:#FEF3C7; color:#92400E; }
+.badge-low      { background:#FEF9C3; color:#713F12; }
+.badge-adequate { background:#D1FAE5; color:#065F46; }
+.badge-high     { background:#FEE2E2; color:#B91C1C; }
+.badge-medium   { background:#FEF3C7; color:#92400E; }
+.status-badge   { font-size:11px; padding:2px 8px; border-radius:12px; font-weight:600; }
+
+/* ── Alert list ───────────────────────────────── */
+.alert-item {
+  display:flex; align-items:flex-start; gap:12px;
+  padding: 10px 0; border-bottom:1px solid #F3F4F6;
+}
+.alert-item:last-child { border-bottom:none; }
+.alert-icon { font-size:18px; flex-shrink:0; padding-top:1px; }
+.alert-icon.critical { color:#E24B4A; }
+.alert-icon.warning  { color:#EF9F27; }
+.alert-icon.info     { color:#534AB7; }
+.alert-title { font-size:13px; font-weight:600; color:#1a1a2e; }
+.alert-title-am { font-size:12px; color:#6B7280; margin-top:1px; }
+.alert-meta  { font-size:11px; color:#9CA3AF; margin-top:3px; }
+
+/* ── Table ────────────────────────────────────── */
+.table-sm td, .table-sm th { padding: 7px 10px; font-size:12.5px; }
+.table-hover tbody tr:hover { background:#F9FAFB; }
+
+/* ── Prescription scanner ─────────────────────── */
+.scan-area {
+  border: 2px dashed #D1D5DB; border-radius:10px;
+  padding: 40px; text-align:center; cursor:pointer;
+  transition: all .2s; background:#FAFAFA;
+}
+.scan-area:hover { border-color: var(--smartrx-primary); background: var(--smartrx-light); }
+.scan-area i { font-size:40px; color:#9CA3AF; }
+
+.medicine-result-card {
+  background:#F9FAFB; border-radius:8px; padding:12px 14px;
+  margin-bottom:10px; border:1px solid #E5E7EB;
+}
+.medicine-result-card .med-name { font-weight:600; font-size:13px; }
+.medicine-result-card .med-name-am { color:#6B7280; font-size:12px; }
+.confidence-bar { height:5px; border-radius:3px; background:#E5E7EB; margin-top:6px; }
+.confidence-fill { height:100%; border-radius:3px; background:var(--smartrx-primary); transition:width .5s; }
+
+/* ── Pharmacy marker popup ────────────────────── */
+.leaflet-popup-content { min-width:200px; font-size:13px; }
+.popup-name { font-weight:700; color:#0F6E56; margin-bottom:6px; font-size:14px; }
+.popup-am   { color:#6B7280; font-size:12px; margin-bottom:8px; }
+.popup-row  { display:flex; justify-content:space-between; font-size:12px; padding:2px 0; }
+.popup-btn  {
+  display:block; width:100%; margin-top:10px; padding:6px;
+  background:var(--smartrx-primary); color:#fff; border:none;
+  border-radius:6px; font-size:12px; cursor:pointer; text-align:center;
+}
+.popup-btn:hover { background:var(--smartrx-dark); }
+
+/* ── Spinner ──────────────────────────────────── */
+.smartrx-spinner {
+  display:inline-block; width:18px; height:18px;
+  border:2px solid #E5E7EB; border-top-color:var(--smartrx-primary);
+  border-radius:50%; animation: spin .6s linear infinite;
+}
+@keyframes spin { to { transform:rotate(360deg); } }
+
+/* ── Language toggle ──────────────────────────── */
+.lang-toggle {
+  display:flex; gap:4px; background:#F3F4F6; border-radius:8px; padding:3px;
+}
+.lang-toggle button {
+  padding:4px 12px; border:none; border-radius:6px; font-size:12px;
+  background:none; cursor:pointer; transition:.15s;
+}
+.lang-toggle button.active { background:#fff; font-weight:600; box-shadow:0 1px 3px rgba(0,0,0,.1); }
+
+/* ── Scrollable tables ────────────────────────── */
+.table-scroll { max-height:340px; overflow-y:auto; }
+
+/* ── Amharic text ─────────────────────────────── */
+.am { font-family: 'Noto Sans Ethiopic', 'Ebrima', sans-serif; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════ SIDEBAR ═══════════════════ -->
+<div id="sidebar">
+  <div class="sidebar-brand">
+    <h1><i class="bi bi-capsule-pill"></i> SmartRx AI</h1>
+    <span>Ethiopia Digital Health · ኢትዮጵያ</span>
+  </div>
+
+  <div class="nav-section">Patient</div>
+  <button class="nav-item-btn active" onclick="showView('patient')">
+    <i class="bi bi-qr-code-scan"></i> Prescription Scanner
+  </button>
+  <button class="nav-item-btn" onclick="showView('pharmacy-map')">
+    <i class="bi bi-geo-alt"></i> Find Pharmacy
+  </button>
+
+  <div class="nav-section">Staff Dashboard</div>
+  <button class="nav-item-btn" onclick="showView('overview')">
+    <i class="bi bi-grid-1x2"></i> System Overview
+  </button>
+  <button class="nav-item-btn" onclick="showView('stock')">
+    <i class="bi bi-box-seam"></i> Stock Monitor
+  </button>
+  <button class="nav-item-btn" onclick="showView('alerts')">
+    <i class="bi bi-bell"></i> Alerts
+    <span id="alert-badge" class="badge bg-danger ms-auto" style="font-size:10px"></span>
+  </button>
+  <button class="nav-item-btn" onclick="showView('forecasts')">
+    <i class="bi bi-graph-up-arrow"></i> AI Forecasts
+  </button>
+
+  <div class="nav-section">Analytics</div>
+  <button class="nav-item-btn" onclick="showView('analytics')">
+    <i class="bi bi-bar-chart-line"></i> Demand Trends
+  </button>
+  <button class="nav-item-btn" onclick="showView('outbreaks')">
+    <i class="bi bi-exclamation-triangle"></i> Outbreak Signals
+  </button>
+  <button class="nav-item-btn" onclick="showView('redistribution')">
+    <i class="bi bi-arrow-left-right"></i> Redistribution
+  </button>
+
+  <div style="padding:16px; margin-top:auto; border-top:1px solid rgba(255,255,255,.12);">
+    <div style="font-size:11px; opacity:.6; margin-bottom:4px;">Logged in as</div>
+    <div style="font-size:13px; font-weight:600;" id="user-info">Not logged in</div>
+    <div style="font-size:11px; opacity:.6; margin-top:2px;">SmartRx AI v1.0.0</div>
+    <button class="btn btn-outline-light btn-sm w-100 mt-2" onclick="logout()" id="logout-btn" style="display:none;">
+      <i class="bi bi-box-arrow-right me-1"></i>Logout
+    </button>
+  </div>
+</div>
+
+<!-- ═══════════════════ MAIN ═══════════════════ -->
+<div id="main">
+
+  <!-- Top bar -->
+  <div class="topbar">
+    <h2 id="topbar-title">Prescription Scanner</h2>
+    <div class="topbar-right">
+      <div class="lang-toggle">
+        <button class="active" onclick="setLang('en')">EN</button>
+        <button onclick="setLang('am')">አማ</button>
+      </div>
+      <span id="live-time" style="font-size:12px;color:#6B7280;"></span>
+      <span class="badge bg-success" style="font-size:11px;">● Live</span>
+    </div>
+  </div>
+
+  <!-- ════ VIEW: LOGIN ════ -->
+  <div id="view-login" class="view active">
+    <div class="row justify-content-center">
+      <div class="col-md-6 col-lg-4">
+        <div class="card-box">
+          <h5 class="text-center mb-4"><i class="bi bi-shield-lock text-success me-2"></i>SmartRx AI Login</h5>
+          <form id="login-form" onsubmit="handleLogin(event)">
+            <div class="mb-3">
+              <label for="username" class="form-label">Username</label>
+              <input type="text" class="form-control" id="username" required>
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <input type="password" class="form-control" id="password" required>
+            </div>
+            <button type="submit" class="btn btn-success w-100" id="login-btn">
+              <i class="bi bi-box-arrow-in-right me-2"></i>Login
+            </button>
+          </form>
+          <div class="mt-3 text-center">
+            <small class="text-muted">Demo Credentials:</small>
+            <div class="mt-2">
+              <small><strong>Admin:</strong> admin / Admin@2024</small><br>
+              <small><strong>Health Ministry Analyst:</strong> analyst1 / Analyst@2024</small><br>
+              <small><strong>Pharmacy Manager:</strong> manager1 / Manager@2024</small><br>
+              <small><strong>Pharmacy Staff:</strong> staff_bole / Staff@2024</small><br>
+              <small><strong>Health Worker:</strong> worker1 / Worker@2024</small><br>
+              <small><strong>Patient:</strong> patient1 / Patient@2024</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ VIEW: PATIENT / PRESCRIPTION SCANNER ════ -->
+  <div id="view-patient" class="view">
+    <div class="row g-3">
+      <div class="col-lg-5">
+        <div class="card-box">
+          <h5><i class="bi bi-camera text-success me-2"></i>Upload Prescription / ማዘዣ ይስቀሉ</h5>
+          <div class="scan-area" onclick="document.getElementById('rx-file').click()" id="scan-drop">
+            <i class="bi bi-file-medical"></i>
+            <div style="margin-top:10px;font-size:14px;color:#6B7280;">
+              Click to upload prescription image<br>
+              <small class="am" style="color:#9CA3AF;">ማዘዣ ምስል ለመጫን ጠቅ ያድርጉ</small>
+            </div>
+          </div>
+          <input type="file" id="rx-file" accept="image/*" style="display:none" onchange="handleFileUpload(this)">
+
+          <div style="margin:14px 0;text-align:center;color:#9CA3AF;font-size:12px;">— or type symptoms / enter Rx text —</div>
+
+          <textarea id="rx-text" class="form-control" rows="4"
+            placeholder="e.g. Amoxicillin 500mg × 7 days, Paracetamol 500mg TDS&#10;አሞክሲሲሊን 500mg, ፓራሲታሞል 500mg"
+            style="font-size:13px;resize:none;"></textarea>
+
+          <div class="row g-2 mt-2">
+            <div class="col-6">
+              <input type="number" id="user-lat" class="form-control form-control-sm"
+                placeholder="Latitude" readonly>
+            </div>
+            <div class="col-6">
+              <input type="number" id="user-lon" class="form-control form-control-sm"
+                placeholder="Longitude" readonly>
+            </div>
+          </div>
+          <div class="d-flex align-items-center justify-content-between mt-2">
+            <small id="location-status" class="text-muted">Waiting for real-time location...</small>
+            <button type="button" class="btn btn-sm btn-outline-success" onclick="refreshUserLocation(true)">
+              <i class="bi bi-crosshair me-1"></i>Use current location
+            </button>
+          </div>
+
+          <button class="btn btn-success w-100 mt-3" onclick="scanPrescription()" id="scan-btn">
+            <i class="bi bi-cpu me-2"></i>Process with AI · AI ያስኬዱ
+          </button>
+        </div>
+
+        <!-- Results -->
+        <div id="rx-results" style="display:none">
+          <div class="card-box">
+            <h5><i class="bi bi-check2-circle text-success me-2"></i>Extracted Medicines · የተወሰዱ መድሃኒቶች</h5>
+            <div id="rx-medicine-list"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-7">
+        <div class="card-box">
+          <h5><i class="bi bi-geo-alt text-success me-2"></i>Nearest Pharmacies with Stock · ቅርብ ፋርማሲዎች</h5>
+          <div id="patient-map"></div>
+          <div id="pharmacy-list-patient" style="margin-top:12px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ VIEW: PHARMACY MAP ════ -->
+  <div id="view-pharmacy-map" class="view">
+    <div class="row g-3 mb-3">
+      <div class="col-md-4">
+        <input type="text" id="pharm-search" class="form-control" placeholder="Search pharmacy / ፋርማሲ ፈልግ" oninput="filterPharmacies()">
+      </div>
+      <div class="col-md-3">
+        <select class="form-select" id="subcity-filter" onchange="filterPharmacies()">
+          <option value="">All sub-cities</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <select class="form-select" id="med-filter" onchange="filterPharmaciesByMed()">
+          <option value="">Filter by medicine</option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <div class="form-check mt-2">
+          <input class="form-check-input" type="checkbox" id="open24" onchange="filterPharmacies()">
+          <label class="form-check-label" for="open24" style="font-size:13px;">24h only</label>
+        </div>
+      </div>
+    </div>
+    <div class="card-box" style="padding:0;overflow:hidden;">
+      <div id="pharmacy-map"></div>
+    </div>
+    <div class="row g-3 mt-0">
+      <div class="col-12">
+        <div class="card-box">
+          <h5>Pharmacies · ፋርማሲዎች <span id="pharm-count" class="badge bg-secondary ms-2"></span></h5>
+          <div class="table-scroll">
+            <table class="table table-sm table-hover mb-0" id="pharm-table">
+              <thead style="position:sticky;top:0;background:#fff;z-index:1;">
+                <tr>
+                  <th>Name · ስም</th><th>Sub-city</th><th>Phone</th>
+                  <th>Stock Health</th><th>Alerts</th><th>24h</th>
+                </tr>
+              </thead>
+              <tbody id="pharm-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ VIEW: SYSTEM OVERVIEW ════ -->
+  <div id="view-overview" class="view">
+    <div class="kpi-grid" id="kpi-grid">
+      <div class="kpi-card"><div class="smartrx-spinner"></div></div>
+    </div>
+    <div class="row g-3">
+      <div class="col-lg-8">
+        <div class="card-box">
+          <h5>Availability by Category · በምድብ ተደራሽነት</h5>
+          <div style="position:relative;height:280px;">
+            <canvas id="category-chart" role="img" aria-label="Medicine availability by category"></canvas>
+          </div>
+        </div>
+        <div class="card-box">
+          <h5>Stock Status by Sub-city · በክፍለ ከተማ ክምችት</h5>
+          <div style="position:relative;height:200px;">
+            <canvas id="subcity-chart" role="img" aria-label="Stock status by sub-city"></canvas>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="card-box">
+          <h5>Stock Health · የክምችት ጤና</h5>
+          <div style="position:relative;height:220px;">
+            <canvas id="stock-donut" role="img" aria-label="Overall stock health donut"></canvas>
+          </div>
+          <div id="stock-legend" style="margin-top:10px;"></div>
+        </div>
+        <div class="card-box">
+          <h5>Recent Alerts · የቅርብ ጊዜ ማስጠንቀቂያዎች</h5>
+          <div id="recent-alerts-list"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ VIEW: STOCK MONITOR ════ -->
+  <div id="view-stock" class="view">
+    <div class="row g-2 mb-3">
+      <div class="col-md-3">
+        <select class="form-select form-select-sm" id="stock-pharmacy">
+          <option value="">All pharmacies</option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <select class="form-select form-select-sm" id="stock-status-filter">
+          <option value="">All status</option>
+          <option value="out">Stock-out</option>
+          <option value="critical">Critical</option>
+          <option value="low">Low</option>
+          <option value="adequate">Adequate</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <input type="text" class="form-control form-control-sm" id="stock-search"
+          placeholder="Search medicine · መድሃኒት ፈልግ" oninput="loadStock()">
+      </div>
+      <div class="col-md-2">
+        <select class="form-select form-select-sm" id="stock-essential">
+          <option value="">All medicines</option>
+          <option value="true">Essential only</option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <button class="btn btn-success btn-sm w-100" onclick="loadStock()">
+          <i class="bi bi-arrow-clockwise"></i> Refresh
+        </button>
+      </div>
+    </div>
+    <div class="card-box" style="padding:0">
+      <div class="table-scroll">
+        <table class="table table-sm table-hover mb-0">
+          <thead style="position:sticky;top:0;background:#fff;z-index:1;">
+            <tr>
+              <th>Medicine · መድሃኒት</th><th>Amharic · አማርኛ</th>
+              <th>Pharmacy</th><th>Category</th>
+              <th>Qty</th><th>Status</th><th>Days Cover</th>
+              <th>Risk (AI)</th><th>Essential</th>
+            </tr>
+          </thead>
+          <tbody id="stock-table-body">
+            <tr><td colspan="9" class="text-center py-4">
+              <div class="smartrx-spinner"></div> Loading...
+            </td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div id="stock-pagination" class="p-3 border-top d-flex justify-content-between align-items-center"></div>
+    </div>
+  </div>
+
+  <!-- ════ VIEW: ALERTS ════ -->
+  <div id="view-alerts" class="view">
+    <div class="row g-3 mb-3">
+      <div class="col-auto">
+        <select class="form-select form-select-sm" id="alert-severity-filter" onchange="loadAlerts()">
+          <option value="">All severity</option>
+          <option value="critical">Critical</option>
+          <option value="warning">Warning</option>
+          <option value="info">Info</option>
+        </select>
+      </div>
+      <div class="col-auto">
+        <select class="form-select form-select-sm" id="alert-type-filter" onchange="loadAlerts()">
+          <option value="">All types</option>
+          <option value="stockout">Stock-out</option>
+          <option value="low_stock">Low stock</option>
+          <option value="outbreak">Outbreak</option>
+          <option value="expiry">Expiry</option>
+          <option value="redistribution">Redistribution</option>
+        </select>
+      </div>
+    </div>
+    <div class="card-box">
+      <div id="alerts-list">
+        <div class="text-center py-4"><div class="smartrx-spinner"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ VIEW: AI FORECASTS ════ -->
+  <div id="view-forecasts" class="view">
+    <div class="row g-3 mb-3">
+      <div class="col-auto">
+        <select class="form-select form-select-sm" id="forecast-horizon" onchange="loadForecasts()">
+          <option value="7">7-day forecast</option>
+          <option value="14">14-day forecast</option>
+          <option value="30">30-day forecast</option>
+        </select>
+      </div>
+      <div class="col-auto">
+        <select class="form-select form-select-sm" id="forecast-risk" onchange="loadForecasts()">
+          <option value="">All risk levels</option>
+          <option value="critical">Critical</option>
+          <option value="high">High</option>
+          <option value="medium">Medium</option>
+        </select>
+      </div>
+      <div class="col-auto">
+        <span class="badge" style="background:#EEEDFE;color:#3C3489;padding:6px 12px;font-size:12px;">
+          <i class="bi bi-cpu me-1"></i>Model: LSTM GBR v1
+        </span>
+      </div>
+    </div>
+    <div class="row g-3 mb-3" id="forecast-kpis"></div>
+    <div class="card-box" style="padding:0">
+      <div class="table-scroll">
+        <table class="table table-sm table-hover mb-0">
+          <thead style="position:sticky;top:0;background:#fff;z-index:1;">
+            <tr>
+              <th>Medicine · መድሃኒት</th><th>Amharic</th><th>Pharmacy</th>
+              <th>Sub-city</th><th>Current Stock</th>
+              <th>Predicted Demand</th><th>CI Lower</th><th>CI Upper</th>
+              <th>Risk</th><th>Stockout Date</th>
+            </tr>
+          </thead>
+          <tbody id="forecast-table-body">
+            <tr><td colspan="10" class="text-center py-4">
+              <div class="smartrx-spinner"></div>
+            </td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ VIEW: ANALYTICS ════ -->
+  <div id="view-analytics" class="view">
+    <div class="row g-3">
+      <div class="col-lg-8">
+        <div class="card-box">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="mb-0">Demand Trends · የፍላጎት አዝማሚያ</h5>
+            <div class="d-flex gap-2">
+              <select class="form-select form-select-sm" style="width:120px" id="demand-period" onchange="loadDemandChart()">
+                <option value="week">Weekly</option>
+                <option value="month">Monthly</option>
+                <option value="day">Daily</option>
+              </select>
+            </div>
+          </div>
+          <div style="position:relative;height:280px;">
+            <canvas id="demand-chart" role="img" aria-label="Demand trends over time"></canvas>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="card-box">
+          <h5>Top Medicines · ዋና መድሃኒቶች</h5>
+          <div style="position:relative;height:280px;">
+            <canvas id="top-medicines-chart" role="img" aria-label="Top dispensed medicines"></canvas>
+          </div>
+        </div>
+      </div>
+      <div class="col-12">
+        <div class="card-box">
+          <h5>Availability Rate by Sub-city · በክፍለ ከተማ ተደራሽነት</h5>
+          <div style="position:relative;height:180px;">
+            <canvas id="availability-chart" role="img" aria-label="Availability rate by sub-city"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ VIEW: OUTBREAK SIGNALS ════ -->
+  <div id="view-outbreaks" class="view">
+    <div class="row g-3 mb-3" id="outbreak-kpis"></div>
+    <div class="row g-3">
+      <div class="col-lg-6">
+        <div class="card-box">
+          <h5><i class="bi bi-exclamation-triangle-fill text-danger me-2"></i>Active Outbreak Signals · ወረርሽኝ ምልክቶች</h5>
+          <div id="outbreak-list"></div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="card-box">
+          <h5>Anomaly Scores · ያልተለመደ ውጤቶች</h5>
+          <div style="position:relative;height:300px;">
+            <canvas id="anomaly-chart" role="img" aria-label="Anomaly scores by medicine"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ VIEW: REDISTRIBUTION ════ -->
+  <div id="view-redistribution" class="view">
+    <div class="d-flex gap-2 mb-3">
+      <button class="btn btn-success btn-sm" onclick="generateRedistribution()">
+        <i class="bi bi-cpu me-1"></i>Generate AI Suggestions · AI ጥቆማዎችን ፍጠር
+      </button>
+      <select class="form-select form-select-sm w-auto" id="redistrib-status" onchange="loadRedistribution()">
+        <option value="suggested">Suggested</option>
+        <option value="approved">Approved</option>
+        <option value="completed">Completed</option>
+      </select>
+    </div>
+    <div class="card-box" style="padding:0">
+      <div class="table-scroll">
+        <table class="table table-sm table-hover mb-0">
+          <thead style="position:sticky;top:0;background:#fff;z-index:1;">
+            <tr>
+              <th>Medicine · መድሃኒት</th><th>From · ከ</th><th>To · ወደ</th>
+              <th>Qty</th><th>Distance</th><th>Urgency</th><th>Status</th><th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="redistrib-table-body">
+            <tr><td colspan="8" class="text-center py-4">
+              <div class="smartrx-spinner"></div>
+            </td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- ─── Scripts ─────────────────────────────────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+/* ══════════════════════════════════════════════════════════
+   CONFIG — in production, point to your deployed API URL
+   ══════════════════════════════════════════════════════════ */
+const API = (() => {
+  const { protocol, hostname, port } = window.location;
+  if (!hostname || protocol === 'file:') return 'http://localhost:8000';
+  if (port === '8000') return '';
+  return `${protocol}//${hostname}:8000`;
+})();
+let TOKEN  = null;
+let currentLang = 'en';
+let pharmacyMap = null, patientMap = null;
+let pharmacyMarkers = [], allPharmacies = [], allMedicines = [];
+let charts = {};
+let currentLocation = null;
+
+/* ── Auth ─────────────────────────────────────────────── */
+async function init() {
+  showView('login');
+  checkApiConnection();
+}
+
+async function checkApiConnection() {
+  const loginBtn = document.getElementById('login-btn');
+  try {
+    const r = await fetch(`${API}/api/health`, { cache: 'no-store' });
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    if (loginBtn) loginBtn.disabled = false;
+  } catch (e) {
+    console.warn('API health check failed:', e);
+    if (loginBtn) loginBtn.disabled = false;
+  }
+}
+
+async function handleLogin(event) {
+  event.preventDefault();
+  const username = document.getElementById('username').value;
+  const password = document.getElementById('password').value;
+  const btn = document.getElementById('login-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="smartrx-spinner"></span> Logging in...';
+
+  try {
+    const r = await fetch(`${API}/api/auth/login`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({username, password})
+    });
+    const d = await r.json();
+    if (r.ok) {
+      TOKEN = d.access_token;
+      // Update sidebar with user info
+      document.getElementById('user-info').textContent = `${d.user.full_name} / ${d.user.full_name_am}`;
+      document.getElementById('logout-btn').style.display = 'block';
+      // Proceed to app
+      startClock();
+      await loadAlertBadge();
+      await Promise.all([loadPharmacies(), loadMedicines()]);
+      initMaps();
+      showView('patient');
+      refreshUserLocation(false);
+    } else {
+      alert('Login failed: ' + d.error);
+    }
+  } catch(e) {
+    console.warn('Login failed:', e);
+    const openedDirectly = window.location.protocol === 'file:';
+    const directFileHelp = openedDirectly
+      ? '\n\nYou opened frontend/index.html directly. Close this tab, run START_SMARTRX.bat, then use http://localhost:3000.'
+      : '';
+    alert(`Login failed. SmartRx API is not reachable at ${API || window.location.origin}.${directFileHelp}\n\nStart the backend/demo launcher, then reload this page.`);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="bi bi-box-arrow-in-right me-2"></i>Login';
+  }
+}
+
+function logout() {
+  TOKEN = null;
+  showView('login');
+  document.getElementById('username').value = '';
+  document.getElementById('password').value = '';
+  // Reset sidebar
+  document.getElementById('user-info').textContent = 'Not logged in';
+  document.getElementById('logout-btn').style.display = 'none';
+}
+
+async function apiFetch(path, opts={}) {
+  const headers = {'Content-Type':'application/json', ...(TOKEN?{Authorization:`Bearer ${TOKEN}`}:{})};
+  try {
+    const r = await fetch(`${API}${path}`, {...opts, headers});
+    return r.json();
+  } catch(e) {
+    return null;
+  }
+}
+
+/* ── Clock ────────────────────────────────────────────── */
+function startClock() {
+  const el = document.getElementById('live-time');
+  setInterval(() => {
+    el.textContent = new Date().toLocaleTimeString('en-ET', {hour:'2-digit',minute:'2-digit'});
+  }, 1000);
+}
+
+/* ── Navigation ───────────────────────────────────────── */
+const VIEW_TITLES = {
+  'patient':'Prescription Scanner · ማዘዣ ስካነር',
+  'pharmacy-map':'Find Pharmacy · ፋርማሲ ፈልግ',
+  'overview':'System Overview · የስርዓት አጠቃላይ',
+  'stock':'Stock Monitor · ክምችት መቆጣጠሪያ',
+  'alerts':'Alerts · ማስጠንቀቂያዎች',
+  'forecasts':'AI Forecasts · AI ትንበያዎች',
+  'analytics':'Demand Analytics · የፍላጎት ትንተና',
+  'outbreaks':'Outbreak Signals · ወረርሽኝ ምልክቶች',
+  'redistribution':'Redistribution · ማሰራጨት',
+};
+
+function showView(name) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.nav-item-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(`view-${name}`).classList.add('active');
+  document.querySelectorAll('.nav-item-btn').forEach(b => {
+    if (b.textContent.trim().toLowerCase().includes(
+      Object.keys(VIEW_TITLES).find(k=>k===name)||name
+    )) b.classList.add('active');
+  });
+  document.getElementById('topbar-title').textContent = VIEW_TITLES[name] || name;
+
+  // Lazy-load view data
+  const loaders = {
+    overview: loadOverview, stock: loadStock, alerts: loadAlerts,
+    forecasts: loadForecasts, analytics: loadAnalytics,
+    outbreaks: loadOutbreaks, redistribution: loadRedistribution,
+    patient: () => { setTimeout(()=>patientMap && patientMap.invalidateSize(),200); },
+    'pharmacy-map': () => { setTimeout(()=>pharmacyMap && pharmacyMap.invalidateSize(),200); loadPharmacyTable(); }
+  };
+  if (loaders[name]) loaders[name]();
+}
+
+/* ── Language ─────────────────────────────────────────── */
+function setLang(lang) {
+  currentLang = lang;
+  document.querySelectorAll('.lang-toggle button').forEach((b,i)=>{
+    b.classList.toggle('active', (i===0&&lang==='en')||(i===1&&lang==='am'));
+  });
+}
+
+/* ── Load pharmacies & medicines ──────────────────────── */
+async function loadPharmacies() {
+  const d = await apiFetch('/api/pharmacies?per_page=100');
+  if (d?.results) {
+    allPharmacies = d.results;
+    populatePharmacySelects();
+  }
+}
+
+async function loadMedicines() {
+  const d = await apiFetch('/api/medicines?per_page=120');
+  if (d?.results) {
+    allMedicines = d.results;
+    const sel = document.getElementById('med-filter');
+    allMedicines.forEach(m => {
+      const o = document.createElement('option');
+      o.value = m.id; o.textContent = `${m.name} · ${m.name_amharic||''}`;
+      sel.appendChild(o);
+    });
+  }
+}
+
+function populatePharmacySelects() {
+  const subcities = [...new Set(allPharmacies.map(p=>p.sub_city).filter(Boolean))].sort();
+  const scSel = document.getElementById('subcity-filter');
+  subcities.forEach(sc => {
+    const o = document.createElement('option'); o.value=sc; o.textContent=sc;
+    scSel.appendChild(o);
+  });
+  const stSel = document.getElementById('stock-pharmacy');
+  allPharmacies.forEach(p => {
+    const o = document.createElement('option'); o.value=p.id; o.textContent=p.name;
+    stSel.appendChild(o);
+  });
+}
+
+/* ── MAPS ─────────────────────────────────────────────── */
+function initMaps() {
+  // Patient map (prescription → nearest pharmacies)
+  patientMap = L.map('patient-map').setView([9.0228, 38.7468], 12);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors', maxZoom:18
+  }).addTo(patientMap);
+
+  // Full pharmacy map
+  pharmacyMap = L.map('pharmacy-map').setView([9.0228, 38.7468], 12);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors', maxZoom:18
+  }).addTo(pharmacyMap);
+
+  // Add all pharmacy markers to full map
+  addPharmacyMarkers();
+  setTimeout(() => {
+    patientMap.invalidateSize();
+    pharmacyMap.invalidateSize();
+  }, 250);
+}
+
+function getBrowserLocation() {
+  return new Promise((resolve, reject) => {
+    if (!navigator.geolocation) {
+      reject(new Error('Geolocation is not supported by this browser.'));
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      pos => resolve({
+        lat: pos.coords.latitude,
+        lon: pos.coords.longitude,
+        accuracy: pos.coords.accuracy
+      }),
+      err => reject(err),
+      { enableHighAccuracy: true, timeout: 12000, maximumAge: 30000 }
+    );
+  });
+}
+
+async function refreshUserLocation(showErrors=false) {
+  const status = document.getElementById('location-status');
+  if (status) status.textContent = 'Getting current location...';
+  try {
+    currentLocation = await getBrowserLocation();
+    document.getElementById('user-lat').value = currentLocation.lat.toFixed(6);
+    document.getElementById('user-lon').value = currentLocation.lon.toFixed(6);
+    if (status) {
+      const acc = currentLocation.accuracy ? `, +/- ${Math.round(currentLocation.accuracy)} m` : '';
+      status.textContent = `Using live location${acc}`;
+      status.className = 'text-success';
+    }
+    if (patientMap) {
+      patientMap.setView([currentLocation.lat, currentLocation.lon], 14);
+      patientMap.invalidateSize();
+    }
+    return currentLocation;
+  } catch (e) {
+    if (status) {
+      status.textContent = 'Location unavailable. Allow browser location access.';
+      status.className = 'text-danger';
+    }
+    if (showErrors) alert('Please allow location access so SmartRx can find nearby pharmacies in real time.');
+    return null;
+  }
+}
+
+function stockColor(score) {
+  if (score >= 75) return '#1D9E75';
+  if (score >= 50) return '#EF9F27';
+  if (score >= 25) return '#E8593C';
+  return '#E24B4A';
+}
+
+async function addPharmacyMarkers() {
+  const d = await apiFetch('/api/dashboard/stock-map');
+  if (!d?.pharmacies) return;
+
+  pharmacyMarkers = [];
+  d.pharmacies.forEach(p => {
+    const color = stockColor(p.health_score);
+    const icon = L.divIcon({
+      className:'',
+      html:`<div style="background:${color};width:14px;height:14px;border-radius:50%;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.3)"></div>`,
+      iconSize:[14,14], iconAnchor:[7,7]
+    });
+    const marker = L.marker([p.lat, p.lon], {icon})
+      .addTo(pharmacyMap)
+      .bindPopup(buildPopup(p));
+    marker.pharmData = p;
+    pharmacyMarkers.push(marker);
+  });
+  document.getElementById('pharm-count').textContent = d.pharmacies.length;
+  buildPharmacyTable(d.pharmacies);
+}
+
+function buildPopup(p) {
+  return `
+    <div class="popup-name">${p.name}</div>
+    <div class="popup-am">${p.name_amharic||''}</div>
+    <div class="popup-row"><span>Sub-city</span><span>${p.sub_city||'-'}</span></div>
+    <div class="popup-row"><span>Stock health</span>
+      <span style="color:${stockColor(p.health_score)};font-weight:600">${p.health_score}%</span></div>
+    <div class="popup-row"><span>Stockouts</span><span style="color:#E24B4A">${p.stock.stockout}</span></div>
+    <div class="popup-row"><span>Critical</span><span style="color:#EF9F27">${p.stock.critical}</span></div>
+    <div class="popup-row"><span>Alerts</span><span>${p.active_alerts}</span></div>
+    <div class="popup-row"><span>24h</span><span>${p.open_24h?'✓ Yes':'No'}</span></div>
+    <button class="popup-btn" onclick="showPharmacyInventory(${p.id},'${p.name}')">
+      View Inventory · ክምችት ይመልከቱ →
+    </button>`;
+}
+
+function filterPharmacies() {
+  const q  = document.getElementById('pharm-search').value.toLowerCase();
+  const sc = document.getElementById('subcity-filter').value;
+  const h24 = document.getElementById('open24').checked;
+  pharmacyMarkers.forEach(m => {
+    const p = m.pharmData;
+    const show = (!q || p.name.toLowerCase().includes(q) || (p.name_amharic||'').includes(q))
+              && (!sc || p.sub_city === sc)
+              && (!h24 || p.open_24h);
+    show ? pharmacyMap.addLayer(m) : pharmacyMap.removeLayer(m);
+  });
+}
+
+async function filterPharmaciesByMed() {
+  const mid = document.getElementById('med-filter').value;
+  if (!mid) { pharmacyMarkers.forEach(m => pharmacyMap.addLayer(m)); return; }
+  const d = await apiFetch(`/api/medicines/${mid}/availability`);
+  if (!d?.results) return;
+  const stockPharmIds = new Set(d.results.map(r=>r.id));
+  pharmacyMarkers.forEach(m => {
+    stockPharmIds.has(m.pharmData.id) ? pharmacyMap.addLayer(m) : pharmacyMap.removeLayer(m);
+  });
+}
+
+function buildPharmacyTable(pharmacies) {
+  const tbody = document.getElementById('pharm-table-body');
+  tbody.innerHTML = pharmacies.map(p => `
+    <tr style="cursor:pointer" onclick="pharmacyMap.setView([${p.lat},${p.lon}],15)">
+      <td><strong>${p.name}</strong><br><small class="text-muted am">${p.name_amharic||''}</small></td>
+      <td>${p.sub_city||'-'}</td>
+      <td><small>${p.phone||'-'}</small></td>
+      <td>
+        <div style="background:#F3F4F6;border-radius:4px;height:8px;width:80px;display:inline-block;vertical-align:middle;">
+          <div style="width:${p.health_score}%;height:100%;background:${stockColor(p.health_score)};border-radius:4px;"></div>
+        </div>
+        <small style="color:${stockColor(p.health_score)};margin-left:4px">${p.health_score}%</small>
+      </td>
+      <td>${p.active_alerts>0?`<span class="badge bg-danger">${p.active_alerts}</span>`:'-'}</td>
+      <td>${p.open_24h?'<i class="bi bi-check-circle-fill text-success"></i>':'-'}</td>
+    </tr>`).join('');
+}
+
+function loadPharmacyTable() {
+  setTimeout(() => { pharmacyMap && pharmacyMap.invalidateSize(); }, 300);
+}
+
+/* ── OVERVIEW ─────────────────────────────────────────── */
+async function loadOverview() {
+  const [overview, avail] = await Promise.all([
+    apiFetch('/api/dashboard/overview'),
+    apiFetch('/api/analytics/availability-rate')
+  ]);
+  if (!overview) return;
+
+  // KPI cards
+  const sh = overview.stock_health, al = overview.alerts;
+  const em = overview.essential_medicines;
+  document.getElementById('kpi-grid').innerHTML = `
+    <div class="kpi-card">
+      <div class="num">${sh.availability_pct}%</div>
+      <div class="lbl">Overall Availability</div>
+      <div class="sub">${sh.adequate+sh.overstock} adequate of ${sh.total_records}</div>
+    </div>
+    <div class="kpi-card alert">
+      <div class="num">${sh.stockouts}</div>
+      <div class="lbl">Stockouts</div>
+      <div class="sub">${sh.critical} critical, ${sh.low} low</div>
+    </div>
+    <div class="kpi-card warn">
+      <div class="num">${al.total}</div>
+      <div class="lbl">Active Alerts</div>
+      <div class="sub">${al.critical} critical, ${al.warning} warnings</div>
+    </div>
+    <div class="kpi-card info">
+      <div class="num">${em.coverage_pct}%</div>
+      <div class="lbl">Essential Coverage</div>
+      <div class="sub">${em.stockouts} essential stockouts</div>
+    </div>
+    <div class="kpi-card">
+      <div class="num">${overview.pharmacies.total}</div>
+      <div class="lbl">Pharmacies</div>
+      <div class="sub">${overview.pharmacies.open_24h} open 24h</div>
+    </div>
+    <div class="kpi-card warn">
+      <div class="num">${overview.outbreak_signals}</div>
+      <div class="lbl">Outbreak Signals</div>
+      <div class="sub">Autoencoder detected</div>
+    </div>`;
+
+  // Donut chart
+  renderDonut(sh);
+
+  // Category chart
+  if (avail?.by_category) renderCategoryChart(avail.by_category);
+  if (avail?.by_sub_city)  renderSubcityChart(avail.by_sub_city);
+
+  // Recent alerts
+  const alerts = await apiFetch('/api/alerts?per_page=5');
+  if (alerts?.results) renderAlertList('recent-alerts-list', alerts.results);
+}
+
+function renderDonut(sh) {
+  const ctx = document.getElementById('stock-donut').getContext('2d');
+  if (charts['donut']) charts['donut'].destroy();
+  charts['donut'] = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels:['Adequate','Low','Critical','Stockout','Overstock'],
+      datasets:[{
+        data:[sh.adequate,sh.low,sh.critical,sh.stockouts,sh.overstock],
+        backgroundColor:['#1D9E75','#EF9F27','#E8593C','#E24B4A','#534AB7'],
+        borderWidth:2, borderColor:'#fff'
+      }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false, cutout:'65%',
+      plugins:{ legend:{display:false} }
+    }
+  });
+  document.getElementById('stock-legend').innerHTML =
+    [['#1D9E75','Adequate',sh.adequate],['#EF9F27','Low',sh.low],
+     ['#E8593C','Critical',sh.critical],['#E24B4A','Stockout',sh.stockouts]]
+    .map(([c,l,n])=>`<span style="display:inline-flex;align-items:center;gap:4px;margin:2px 8px 2px 0;font-size:12px;">
+      <span style="width:10px;height:10px;border-radius:2px;background:${c};flex-shrink:0"></span>${l}: <b>${n}</b>
+    </span>`).join('');
+}
+
+function renderCategoryChart(cats) {
+  const ctx = document.getElementById('category-chart').getContext('2d');
+  if (charts['cat']) charts['cat'].destroy();
+  const sorted = [...cats].sort((a,b)=>a.availability_pct-b.availability_pct);
+  charts['cat'] = new Chart(ctx, {
+    type:'bar',
+    data:{
+      labels: sorted.map(c=>c.category.substring(0,20)),
+      datasets:[{
+        label:'Availability %', data: sorted.map(c=>c.availability_pct),
+        backgroundColor: sorted.map(c=>c.availability_pct>=75?'#1D9E75':c.availability_pct>=50?'#EF9F27':'#E24B4A'),
+        borderRadius:4
+      }]
+    },
+    options:{
+      indexAxis:'y', responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{
+        x:{min:0,max:100,ticks:{callback:v=>v+'%'}},
+        y:{ticks:{font:{size:11}}}
+      }
+    }
+  });
+}
+
+function renderSubcityChart(scs) {
+  const ctx = document.getElementById('subcity-chart').getContext('2d');
+  if (charts['sc']) charts['sc'].destroy();
+  charts['sc'] = new Chart(ctx, {
+    type:'bar',
+    data:{
+      labels: scs.map(s=>s.sub_city||'Unknown'),
+      datasets:[
+        { label:'Adequate', data:scs.map(s=>s.available), backgroundColor:'#1D9E75', stack:'s', borderRadius:2 },
+        { label:'Stockout',  data:scs.map(s=>s.stockout),  backgroundColor:'#E24B4A', stack:'s', borderRadius:2 },
+      ]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{position:'top'}},
+      scales:{x:{stacked:true},y:{stacked:true}}
+    }
+  });
+}
+
+/* ── STOCK ────────────────────────────────────────────── */
+let stockPage = 1;
+async function loadStock() {
+  const pid    = document.getElementById('stock-pharmacy').value;
+  const status = document.getElementById('stock-status-filter').value;
+  const q      = document.getElementById('stock-search').value;
+  const ess    = document.getElementById('stock-essential').value;
+
+  let url = pid
+    ? `/api/pharmacies/${pid}/inventory?page=${stockPage}&per_page=50`
+    : `/api/medicines?page=${stockPage}&per_page=50`;
+
+  if (status && pid) url += `&status=${status}`;
+  if (q) url += `&q=${encodeURIComponent(q)}`;
+  if (ess) url += `&essential=${ess}`;
+
+  const tbody = document.getElementById('stock-table-body');
+  tbody.innerHTML = '<tr><td colspan="9" class="text-center py-3"><div class="smartrx-spinner"></div></td></tr>';
+  const d = await apiFetch(url);
+  if (!d?.results) { tbody.innerHTML='<tr><td colspan="9" class="text-center text-muted py-3">No data</td></tr>'; return; }
+
+  // If using medicines endpoint, enrich with inventory
+  let rows = d.results;
+  tbody.innerHTML = rows.map(r => {
+    const status = r.stock_status || 'adequate';
+    const risk   = r.shortage_risk || '-';
+    return `<tr>
+      <td><strong>${r.name_english||r.name||'-'}</strong></td>
+      <td class="am" style="font-size:12px">${r.name_amharic||''}</td>
+      <td style="font-size:12px">${r.pharmacy_name||r.pharmacy||'-'}</td>
+      <td style="font-size:11px">${r.category||'-'}</td>
+      <td><strong>${r.quantity!=null?r.quantity:'-'}</strong></td>
+      <td><span class="status-badge badge-${status}">${status}</span></td>
+      <td>${r.days_of_stock!=null?r.days_of_stock+' d':'-'}</td>
+      <td><span class="status-badge badge-${risk}">${risk}</span></td>
+      <td>${r.is_essential?'<i class="bi bi-star-fill text-warning"></i>':''}</td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('stock-pagination').innerHTML =
+    `<span style="font-size:12px;color:#6B7280">Page ${stockPage} · ${d.total||rows.length} records</span>
+     <div class="d-flex gap-2">
+       <button class="btn btn-sm btn-outline-secondary" ${stockPage<=1?'disabled':''} onclick="stockPage--;loadStock()">‹ Prev</button>
+       <button class="btn btn-sm btn-outline-secondary" onclick="stockPage++;loadStock()">Next ›</button>
+     </div>`;
+}
+
+/* ── ALERTS ───────────────────────────────────────────── */
+async function loadAlertBadge() {
+  const d = await apiFetch('/api/alerts?per_page=1&severity=critical');
+  const badge = document.getElementById('alert-badge');
+  if (d?.total > 0) { badge.textContent = d.total; badge.style.display=''; }
+  else badge.style.display='none';
+}
+
+async function loadAlerts() {
+  const sev  = document.getElementById('alert-severity-filter').value;
+  const type = document.getElementById('alert-type-filter').value;
+  let url = `/api/alerts?per_page=50`;
+  if (sev)  url += `&severity=${sev}`;
+  if (type) url += `&type=${type}`;
+  const d = await apiFetch(url);
+  renderAlertList('alerts-list', d?.results || []);
+}
+
+const ALERT_ICONS = {
+  stockout:'bi-x-circle-fill', low_stock:'bi-exclamation-circle-fill',
+  outbreak:'bi-virus', expiry:'bi-clock-history', redistribution:'bi-arrow-left-right'
+};
+
+function renderAlertList(containerId, alerts) {
+  const el = document.getElementById(containerId);
+  if (!alerts.length) { el.innerHTML='<div class="text-muted text-center py-3" style="font-size:13px">No active alerts · ማስጠንቀቂያ የለም</div>'; return; }
+  el.innerHTML = alerts.map(a => `
+    <div class="alert-item">
+      <i class="bi ${ALERT_ICONS[a.alert_type]||'bi-bell-fill'} alert-icon ${a.severity}"></i>
+      <div style="flex:1">
+        <div class="alert-title">${a.title}</div>
+        <div class="alert-title-am am">${a.title_amharic||''}</div>
+        <div class="alert-meta">
+          ${a.pharmacy_name||'System-wide'} · ${a.medicine_name||''} ·
+          <span class="status-badge badge-${a.severity}">${a.severity}</span> ·
+          ${new Date(a.created_at).toLocaleDateString()}
+        </div>
+      </div>
+      <button class="btn btn-sm btn-outline-secondary" onclick="resolveAlert(${a.id},this)">Resolve</button>
+    </div>`).join('');
+}
+
+async function resolveAlert(id, btn) {
+  btn.disabled=true; btn.textContent='...';
+  await apiFetch(`/api/alerts/${id}/resolve`, {method:'PUT'});
+  btn.closest('.alert-item').style.opacity='0.4';
+  btn.textContent='✓';
+}
+
+/* ── FORECASTS ────────────────────────────────────────── */
+async function loadForecasts() {
+  const horizon = document.getElementById('forecast-horizon').value;
+  const risk    = document.getElementById('forecast-risk').value;
+  let url = `/api/forecasts?horizon=${horizon}&per_page=100`;
+  if (risk) url += `&risk=${risk}`;
+  const d = await apiFetch(url);
+  const rows = d?.results || [];
+
+  // KPI summary
+  const byRisk = {critical:0,high:0,medium:0,low:0};
+  rows.forEach(r => byRisk[r.predicted_risk]=(byRisk[r.predicted_risk]||0)+1);
+  document.getElementById('forecast-kpis').innerHTML = [
+    ['critical','#E24B4A','Critical'],['high','#E8593C','High'],
+    ['medium','#EF9F27','Medium'],['low','#1D9E75','Low']
+  ].map(([k,c,l])=>`
+    <div class="col-md-3">
+      <div class="kpi-card" style="border-left-color:${c}">
+        <div class="num" style="color:${c}">${byRisk[k]||0}</div>
+        <div class="lbl">${l} Risk</div>
+        <div class="sub">${horizon}-day horizon</div>
+      </div>
+    </div>`).join('');
+
+  const tbody = document.getElementById('forecast-table-body');
+  tbody.innerHTML = rows.map(r => {
+    const stockoutDate = r.days_of_stock
+      ? new Date(Date.now()+r.days_of_stock*864e5).toLocaleDateString('en-ET')
+      : 'Already out';
+    return `<tr>
+      <td><strong>${r.name_english||'-'}</strong></td>
+      <td class="am" style="font-size:12px">${r.name_amharic||''}</td>
+      <td style="font-size:12px">${r.pharmacy_name||'-'}</td>
+      <td style="font-size:12px">${r.sub_city||'-'}</td>
+      <td>${r.current_stock!=null?r.current_stock:'-'}</td>
+      <td><strong>${Math.round(r.predicted_demand||0)}</strong></td>
+      <td style="color:#9CA3AF;font-size:12px">${Math.round(r.confidence_lower||0)}</td>
+      <td style="color:#9CA3AF;font-size:12px">${Math.round(r.confidence_upper||0)}</td>
+      <td><span class="status-badge badge-${r.predicted_risk}">${r.predicted_risk}</span></td>
+      <td style="font-size:12px;color:${r.predicted_risk==='critical'?'#E24B4A':'inherit'}">${stockoutDate}</td>
+    </tr>`;
+  }).join('');
+}
+
+/* ── ANALYTICS ────────────────────────────────────────── */
+async function loadAnalytics() {
+  loadDemandChart();
+  loadTopMedicines();
+  loadAvailabilityChart();
+}
+
+async function loadDemandChart() {
+  const period = document.getElementById('demand-period').value;
+  const d = await apiFetch(`/api/analytics/demand?period=${period}`);
+  if (!d?.series) return;
+  const ctx = document.getElementById('demand-chart').getContext('2d');
+  if (charts['demand']) charts['demand'].destroy();
+  charts['demand'] = new Chart(ctx, {
+    type:'line',
+    data:{
+      labels: d.series.map(r=>r.period_label),
+      datasets:[{
+        label:'Units Dispensed', data: d.series.map(r=>r.total_dispensed),
+        borderColor:'#1D9E75', backgroundColor:'rgba(29,158,117,.08)',
+        tension:.3, fill:true, pointRadius:2, borderWidth:2
+      }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{
+        x:{ticks:{maxTicksLimit:12,font:{size:11}}},
+        y:{ticks:{font:{size:11}}}
+      }
+    }
+  });
+}
+
+async function loadTopMedicines() {
+  const d = await apiFetch('/api/analytics/top-medicines?days=30&limit=10');
+  if (!d?.results) return;
+  const ctx = document.getElementById('top-medicines-chart').getContext('2d');
+  if (charts['top']) charts['top'].destroy();
+  const sorted = [...d.results].sort((a,b)=>a.total_dispensed-b.total_dispensed);
+  charts['top'] = new Chart(ctx, {
+    type:'bar',
+    data:{
+      labels: sorted.map(m=>m.name_english.substring(0,18)),
+      datasets:[{
+        label:'Units (30d)', data:sorted.map(m=>m.total_dispensed),
+        backgroundColor:'#534AB7', borderRadius:3
+      }]
+    },
+    options:{
+      indexAxis:'y', responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{y:{ticks:{font:{size:11}}}}
+    }
+  });
+}
+
+async function loadAvailabilityChart() {
+  const d = await apiFetch('/api/analytics/availability-rate');
+  if (!d?.by_sub_city) return;
+  const ctx = document.getElementById('availability-chart').getContext('2d');
+  if (charts['avail']) charts['avail'].destroy();
+  charts['avail'] = new Chart(ctx, {
+    type:'bar',
+    data:{
+      labels: d.by_sub_city.map(s=>s.sub_city),
+      datasets:[{
+        label:'Availability %', data:d.by_sub_city.map(s=>s.availability_pct),
+        backgroundColor: d.by_sub_city.map(s=>s.availability_pct>=75?'#1D9E75':s.availability_pct>=50?'#EF9F27':'#E24B4A'),
+        borderRadius:4
+      }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{
+        y:{min:0,max:100,ticks:{callback:v=>v+'%',font:{size:11}}},
+        x:{ticks:{font:{size:11}}}
+      }
+    }
+  });
+}
+
+/* ── OUTBREAKS ────────────────────────────────────────── */
+async function loadOutbreaks() {
+  const d = await apiFetch('/api/analytics/outbreak-signals?days=365&limit=100');
+  if (!d) return;
+
+  document.getElementById('outbreak-kpis').innerHTML = `
+    <div class="col-md-4">
+      <div class="kpi-card alert">
+        <div class="num">${d.outbreak_count}</div>
+        <div class="lbl">Outbreak Signals</div>
+        <div class="sub">Autoencoder detected</div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="kpi-card warn">
+        <div class="num">${d.anomaly_count}</div>
+        <div class="lbl">Demand Anomalies</div>
+        <div class="sub">Z-score threshold exceeded</div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="kpi-card">
+        <div class="num">${d.total}</div>
+        <div class="lbl">Total Events</div>
+        <div class="sub">Last 365 days</div>
+      </div>
+    </div>`;
+
+  // Outbreak list
+  const obEl = document.getElementById('outbreak-list');
+  const events = [...(d.outbreaks||[])].slice(0,8);
+  obEl.innerHTML = events.map(e => `
+    <div class="alert-item">
+      <i class="bi bi-virus alert-icon critical"></i>
+      <div>
+        <div class="alert-title">${e.event_name||e.medicine_name}</div>
+        <div class="alert-meta">
+          ${e.pharmacy_name||'City-wide'} · ${e.sub_city||''} ·
+          Score: <strong>${Number(e.anomaly_score||0).toFixed(3)}</strong> ·
+          Spike: <strong>${Number(e.spike_magnitude||0).toFixed(1)}%</strong> ·
+          ${e.event_date}
+        </div>
+      </div>
+    </div>`).join('') || '<div class="text-muted text-center py-3">No outbreak signals</div>';
+
+  // Anomaly score chart — top 10 by score
+  const top10 = [...(d.outbreaks||[]),...(d.anomalies||[])]
+    .sort((a,b)=>(b.anomaly_score||0)-(a.anomaly_score||0)).slice(0,10);
+  const ctx = document.getElementById('anomaly-chart').getContext('2d');
+  if (charts['anomaly']) charts['anomaly'].destroy();
+  charts['anomaly'] = new Chart(ctx, {
+    type:'bar',
+    data:{
+      labels: top10.map(e=>(e.medicine_name||'').substring(0,16)),
+      datasets:[{
+        label:'Anomaly Score',
+        data: top10.map(e=>Number(e.anomaly_score||0).toFixed(3)),
+        backgroundColor: top10.map(e=>e.is_outbreak?'#E24B4A':'#EF9F27'),
+        borderRadius:4
+      }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{
+        y:{min:0,max:1,title:{display:true,text:'Score (0–1)',font:{size:11}}},
+        x:{ticks:{font:{size:11}}}
+      }
+    }
+  });
+}
+
+/* ── REDISTRIBUTION ───────────────────────────────────── */
+async function loadRedistribution() {
+  const status = document.getElementById('redistrib-status').value;
+  const d = await apiFetch(`/api/redistribution?status=${status}&per_page=50`);
+  const rows = d?.results || [];
+  document.getElementById('redistrib-table-body').innerHTML = rows.map(r => `
+    <tr>
+      <td><strong>${r.name_english||'-'}</strong><br><small class="am text-muted">${r.name_amharic||''}</small></td>
+      <td style="font-size:12px">${r.source_name||'-'}<br><small class="text-muted">${r.source_sub_city||''}</small></td>
+      <td style="font-size:12px">${r.target_name||'-'}<br><small class="text-muted">${r.target_sub_city||''}</small></td>
+      <td><strong>${r.suggested_quantity}</strong></td>
+      <td style="font-size:12px">${r.distance_km?Number(r.distance_km).toFixed(1)+' km':'-'}</td>
+      <td>
+        <div style="display:flex;align-items:center;gap:4px">
+          <div style="width:${r.urgency_score||0}px;max-width:60px;height:6px;background:${r.urgency_score>=70?'#E24B4A':r.urgency_score>=40?'#EF9F27':'#1D9E75'};border-radius:3px"></div>
+          <small>${Math.round(r.urgency_score||0)}</small>
+        </div>
+      </td>
+      <td><span class="status-badge badge-${r.status==='suggested'?'medium':'adequate'}">${r.status}</span></td>
+      <td>
+        ${r.status==='suggested'?`<button class="btn btn-xs btn-success" style="font-size:11px;padding:2px 8px" onclick="approveRedistrib(${r.id},this)">Approve</button>`:''}
+      </td>
+    </tr>`).join('') ||
+    '<tr><td colspan="8" class="text-center text-muted py-3">No suggestions</td></tr>';
+}
+
+async function generateRedistribution() {
+  const btn = event.target;
+  btn.disabled=true; btn.innerHTML='<div class="smartrx-spinner d-inline-block me-2"></div>Generating...';
+  const d = await apiFetch('/api/redistribution', {method:'POST'});
+  btn.disabled=false; btn.innerHTML='<i class="bi bi-cpu me-1"></i>Generate AI Suggestions · AI ጥቆማዎችን ፍጠር';
+  if (d?.suggestions_created) {
+    alert(`✓ ${d.suggestions_created} suggestions generated by AI engine`);
+    loadRedistribution();
+  }
+}
+
+async function approveRedistrib(id, btn) {
+  btn.disabled=true;
+  await apiFetch(`/api/redistribution/${id}/approve`, {method:'PUT'});
+  btn.textContent='✓ Approved'; btn.className='btn btn-xs btn-secondary';
+  btn.style.cssText='font-size:11px;padding:2px 8px';
+}
+
+/* ── PRESCRIPTION SCANNER ─────────────────────────────── */
+function handleFileUpload(input) {
+  if (input.files[0]) {
+    document.getElementById('scan-drop').innerHTML =
+      `<i class="bi bi-file-earmark-check" style="color:var(--smartrx-primary)"></i>
+       <div style="margin-top:8px;font-size:13px;color:var(--smartrx-primary)">
+         ${input.files[0].name}<br><small>Click to change</small></div>`;
+    // Removed automatic scanPrescription() call - user must click "Process with AI"
+  }
+}
+
+async function scanPrescription() {
+  const text    = document.getElementById('rx-text').value.trim();
+  const fileInp = document.getElementById('rx-file');
+
+  if (!text && !fileInp.files[0]) {
+    alert('Please enter prescription text or upload an image');
+    return;
+  }
+
+  const loc = await refreshUserLocation(true);
+  if (!loc) return;
+  const lat = loc.lat;
+  const lon = loc.lon;
+
+  const btn = document.getElementById('scan-btn');
+  btn.disabled=true; btn.innerHTML='<div class="smartrx-spinner d-inline-block me-2"></div>Processing with AI...';
+
+  const body = text
+    ? { ocr_text: text, language: 'english', lat, lon }
+    : { image_base64: await toBase64(fileInp.files[0]), lat, lon };
+
+  const d = await apiFetch('/api/prescriptions', {method:'POST', body:JSON.stringify(body)});
+
+  btn.disabled=false;
+  btn.innerHTML='<i class="bi bi-cpu me-2"></i>Process with AI · AI ያስኬዱ';
+
+  if (d?.error) {
+    const ocrInfo = d.ocr_text ? `\n\nOCR read:\n${d.ocr_text}` : '';
+    const hint = d.hint ? `\n\n${d.hint}` : '';
+    alert(`${d.error}${ocrInfo}${hint}`);
+    return;
+  }
+  if (!d?.medicines) { alert('Could not process prescription'); return; }
+
+  renderRxResults(d, lat, lon);
+}
+
+function toBase64(file) {
+  return new Promise(res => {
+    const r = new FileReader();
+    r.onload = e => res(e.target.result.split(',')[1]);
+    r.readAsDataURL(file);
+  });
+}
+
+function formatDistanceKm(value) {
+  return value == null ? 'Distance unavailable' : `${value} km`;
+}
+
+function renderRxResults(d, lat, lon) {
+  document.getElementById('rx-results').style.display='block';
+  const meds = d.medicines || [];
+  const ocrDebug = d.ocr_text
+    ? `<div style="font-size:12px;color:#6B7280;margin-bottom:10px;padding:8px;border:1px dashed #CBD5E1;border-radius:6px;background:#F8FAFC">
+         <strong>OCR read:</strong> ${escapeHtml(d.ocr_text).replace(/\n/g, '<br>')}
+       </div>`
+    : '';
+
+  document.getElementById('rx-medicine-list').innerHTML = ocrDebug + meds.map(m => `
+    <div class="medicine-result-card">
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <div class="med-name">${m.name||m.matched_name||'Unknown'}</div>
+          <div class="med-name-am am">${m.name_amharic||''}</div>
+          <div style="font-size:11px;color:#6B7280;margin-top:2px">
+            ${m.dosage_instruction||''} ${m.extracted_strength?'· '+m.extracted_strength:''}
+          </div>
+        </div>
+        <div class="text-end">
+          <span class="status-badge ${m.matched?'badge-adequate':'badge-medium'}">
+            ${m.matched?'✓ Matched':'Not found'}
+          </span>
+          <div style="font-size:11px;color:#9CA3AF;margin-top:2px">${Math.round((m.confidence||0)*100)}% confidence</div>
+        </div>
+      </div>
+      <div class="confidence-bar">
+        <div class="confidence-fill" style="width:${Math.round((m.confidence||0)*100)}%"></div>
+      </div>
+      ${m.nearest_pharmacies?.length ? `
+        <div style="margin-top:8px;font-size:12px;color:#6B7280">
+          <i class="bi bi-geo-alt"></i> Nearest with stock:
+          <strong>${m.nearest_pharmacies[0].pharmacy_name}</strong>
+          (${formatDistanceKm(m.nearest_pharmacies[0].distance_km)}) ·
+          ${m.nearest_pharmacies[0].quantity} units available
+        </div>` : ''}
+    </div>`).join('');
+
+  // Update patient map
+  patientMap.eachLayer(l => { if (l instanceof L.Marker) patientMap.removeLayer(l); });
+  L.marker([lat, lon], {icon: L.divIcon({
+    className:'',
+    html:'<div style="background:#534AB7;width:14px;height:14px;border-radius:50%;border:2px solid #fff"></div>',
+    iconSize:[14,14], iconAnchor:[7,7]
+  })}).addTo(patientMap).bindPopup('Your location · የእርስዎ ቦታ').openPopup();
+
+  // Add pharmacy markers for found medicines
+  const allPharms = new Map();
+  meds.forEach(m => {
+    (m.nearest_pharmacies||[]).forEach(p => {
+      if (!allPharms.has(p.pharmacy_id)) allPharms.set(p.pharmacy_id, {...p, medicines:[]});
+      allPharms.get(p.pharmacy_id).medicines.push(m.name);
+    });
+  });
+
+  allPharms.forEach(p => {
+    const icon = L.divIcon({
+      className:'',
+      html:`<div style="background:#1D9E75;width:14px;height:14px;border-radius:50%;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.3)"></div>`,
+      iconSize:[14,14], iconAnchor:[7,7]
+    });
+    L.marker([p.latitude, p.longitude], {icon}).addTo(patientMap)
+      .bindPopup(`<div class="popup-name">${p.pharmacy_name}</div>
+        <div class="popup-am">${p.name_amharic||''}</div>
+        <div class="popup-row"><span>Distance</span><span>${formatDistanceKm(p.distance_km)}</span></div>
+        <div class="popup-row"><span>24h</span><span>${p.open_24h?'Yes':'No'}</span></div>
+        <div style="margin-top:6px;font-size:12px"><strong>Has:</strong> ${p.medicines.join(', ')}</div>`);
+  });
+
+  if (allPharms.size) patientMap.fitBounds(
+    [[lat,lon], ...[...allPharms.values()].map(p=>[p.latitude,p.longitude])],
+    {padding:[20,20]}
+  );
+
+  // Pharmacy list below map
+  document.getElementById('pharmacy-list-patient').innerHTML = `
+    <div style="font-size:12px;color:#6B7280;margin-bottom:8px">
+      <i class="bi bi-check-circle text-success"></i>
+      ${d.medicines_extracted} medicines extracted · Confidence: ${Math.round((d.overall_confidence||0)*100)}%
+    </div>` + [...allPharms.values()].slice(0,4).map(p=>`
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #F3F4F6;">
+      <div>
+        <strong style="font-size:13px">${p.pharmacy_name}</strong>
+        <div style="font-size:11px;color:#6B7280">${p.name_amharic||''} · ${p.sub_city||''}</div>
+      </div>
+      <div class="text-end">
+        <div style="font-size:13px;font-weight:600;color:#1D9E75">${formatDistanceKm(p.distance_km)}</div>
+        <div style="font-size:11px;color:#6B7280">${p.phone||''}</div>
+      </div>
+    </div>`).join('');
+}
+
+function escapeHtml(value) {
+  return String(value ?? '').replace(/[&<>"']/g, ch => ({
+    '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'
+  }[ch]));
+}
+
+async function showPharmacyInventory(id, name) {
+  alert(`Loading inventory for ${name}...\nIn full deployment, this opens the stock detail panel.`);
+}
+
+/* ── BOOT ─────────────────────────────────────────────── */
+init();
+</script>
+</body>
+</html>

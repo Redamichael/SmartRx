@@ -1,0 +1,50 @@
+{
+  "model_type": "IsolationForest + PCA (Autoencoder-equivalent)",
+  "total_samples": 9480,
+  "anomalies_found": 474,
+  "anomaly_rate_pct": 5.0,
+  "contamination": 0.05,
+  "trained_at": "2026-05-13",
+  "top_anomalies": [
+    {
+      "medicine_id": 51,
+      "year": 2024,
+      "week": 46,
+      "norm_score": 0.9999999979242278,
+      "spike_ratio": 9.784860557768924,
+      "z_score": 2205.0
+    },
+    {
+      "medicine_id": 1,
+      "year": 2024,
+      "week": 46,
+      "norm_score": 0.9930163230388572,
+      "spike_ratio": 1.7653766413268832,
+      "z_score": 2215.0
+    },
+    {
+      "medicine_id": 43,
+      "year": 2024,
+      "week": 46,
+      "norm_score": 0.9814396813548657,
+      "spike_ratio": 5.3765822784810124,
+      "z_score": 1383.0
+    },
+    {
+      "medicine_id": 12,
+      "year": 2024,
+      "week": 46,
+      "norm_score": 0.9670785916105119,
+      "spike_ratio": 3.324770642201835,
+      "z_score": 1267.0
+    },
+    {
+      "medicine_id": 14,
+      "year": 2024,
+      "week": 46,
+      "norm_score": 0.9630792036670214,
+      "spike_ratio": 4.709677419354839,
+      "z_score": 1150.0
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+id,name,name_amharic,sub_city,woreda,latitude,longitude,type,phone,open_24h,license_number,region
+1,Bole Kenema Pharmacy,ቦሌ ቀነማ ፋርማሲ,Bole,03,8.9806,38.7578,private,+251911234501,True,ETH-PHARM-0001,Addis Ababa
+2,Piassa Medhanealem Pharmacy,ፒያሳ መድሃኒዓለም ፋርማሲ,Addis Ketema,07,9.0298,38.7468,private,+251911234502,False,ETH-PHARM-0002,Addis Ababa
+3,Megenagna Betezata Pharmacy,መገናኛ ቤተዛታ ፋርማሲ,Yeka,09,9.0228,38.802,private,+251911234503,True,ETH-PHARM-0003,Addis Ababa
+4,CMC Selam Pharmacy,ሲኤምሲ ሰላም ፋርማሲ,Yeka,11,9.0358,38.814,private,+251911234504,False,ETH-PHARM-0004,Addis Ababa
+5,Kazanchis Abyssinia Pharmacy,ካዛንቺስ አቢሲኒያ ፋርማሲ,Kirkos,08,9.0156,38.7673,private,+251911234505,False,ETH-PHARM-0005,Addis Ababa
+6,Mexico Tsenat Pharmacy,ሜክሲኮ ጤናት ፋርማሲ,Kirkos,10,9.0089,38.753,private,+251911234506,True,ETH-PHARM-0006,Addis Ababa
+7,Merkato Genet Pharmacy,መርካቶ ገነት ፋርማሲ,Addis Ketema,01,9.0356,38.7298,private,+251911234507,False,ETH-PHARM-0007,Addis Ababa
+8,Gerji Tsion Pharmacy,ገርጂ ጽዮን ፋርማሲ,Bole,06,8.9956,38.823,private,+251911234508,False,ETH-PHARM-0008,Addis Ababa
+9,Jemo Hayat Pharmacy,ጀሞ ሃያት ፋርማሲ,Nifas Silk,02,8.9612,38.719,private,+251911234509,True,ETH-PHARM-0009,Addis Ababa
+10,Saris Alem Pharmacy,ሳሪስ ዓለም ፋርማሲ,Nifas Silk,04,8.9723,38.738,private,+251911234510,False,ETH-PHARM-0010,Addis Ababa
+11,Lideta Wubet Pharmacy,ልደታ ውበት ፋርማሲ,Lideta,06,9.0156,38.7398,private,+251911234511,False,ETH-PHARM-0011,Addis Ababa
+12,Kolfe Birhan Pharmacy,ቆልፌ ብርሃን ፋርማሲ,Kolfe,03,9.0289,38.6998,private,+251911234512,False,ETH-PHARM-0012,Addis Ababa
+13,Akaki Zion Pharmacy,አቃቂ ጽዮን ፋርማሲ,Akaki,05,8.8923,38.798,private,+251911234513,False,ETH-PHARM-0013,Addis Ababa
+14,Gulele Hiwot Pharmacy,ጉለሌ ሕይወት ፋርማሲ,Gulele,04,9.0523,38.7398,private,+251911234514,False,ETH-PHARM-0014,Addis Ababa
+15,Arada Tsehay Pharmacy,አራዳ ፀሐይ ፋርማሲ,Arada,10,9.0389,38.7523,government,+251911234515,False,ETH-PHARM-0015,Addis Ababa
+16,Yeka Mikael Pharmacy,የካ ሚካኤል ፋርማሲ,Yeka,13,9.0456,38.8298,private,+251911234516,False,ETH-PHARM-0016,Addis Ababa
+17,Nifas Silk Hope Pharmacy,ንፋስ ስልክ ተስፋ ፋርማሲ,Nifas Silk,07,8.9789,38.7789,private,+251911234517,False,ETH-PHARM-0017,Addis Ababa
+18,Kirkos Selassie Pharmacy,ቅርቆስ ሥላሴ ፋርማሲ,Kirkos,05,9.0023,38.7623,private,+251911234518,False,ETH-PHARM-0018,Addis Ababa
+19,Bole Atlas Pharmacy,ቦሌ አትላስ ፋርማሲ,Bole,05,9.0023,38.7789,private,+251911234519,True,ETH-PHARM-0019,Addis Ababa
+20,Sarbet Medhanit Pharmacy,ሳርቤት መድሃኒት ፋርማሲ,Bole,08,8.9878,38.7623,private,+251911234520,False,ETH-PHARM-0020,Addis Ababa
+21,Hawassa Rift Pharmacy,ሀዋሳ ሪፍት ፋርማሲ,Hawassa,01,7.0594,38.4768,private,+251911234521,False,ETH-PHARM-0021,SNNPR
+22,Bahir Dar Tana Pharmacy,ባህር ዳር ጣና ፋርማሲ,Bahir Dar,02,11.5742,37.3614,private,+251911234522,False,ETH-PHARM-0022,Amhara
+23,Mekelle Tigray Pharmacy,መቀለ ትግራይ ፋርማሲ,Mekelle,03,13.4967,39.4769,government,+251911234523,False,ETH-PHARM-0023,Tigray
+24,Adama Nazret Pharmacy,አዳማ ናዝሬት ፋርማሲ,Adama,01,8.54,39.27,private,+251911234524,False,ETH-PHARM-0024,Oromia
+25,Dire Dawa Ras Pharmacy,ድሬ ዳዋ ራስ ፋርማሲ,Dire Dawa,02,9.5931,41.8571,private,+251911234525,False,ETH-PHARM-0025,Dire Dawa

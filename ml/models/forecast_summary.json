@@ -1,0 +1,64 @@
+{
+  "model_type": "GradientBoosting (LSTM-equivalent sliding window)",
+  "medicines": 120,
+  "horizons": [
+    7,
+    14,
+    30
+  ],
+  "lookback_weeks": 8,
+  "trained_at": "2026-05-13",
+  "avg_mae": 75.57,
+  "top_performers": [
+    {
+      "id": 98,
+      "name": "Lidocaine",
+      "mae": 23.01
+    },
+    {
+      "id": 94,
+      "name": "Ringer's Lactate",
+      "mae": 25.7
+    },
+    {
+      "id": 42,
+      "name": "Hydrochlorothiazide",
+      "mae": 29.71
+    },
+    {
+      "id": 35,
+      "name": "Ketoconazole",
+      "mae": 29.9
+    },
+    {
+      "id": 39,
+      "name": "Insulin NPH",
+      "mae": 31.64
+    },
+    {
+      "id": 10,
+      "name": "Amoxicillin Syrup",
+      "mae": 32.07
+    },
+    {
+      "id": 86,
+      "name": "Povidone Iodine",
+      "mae": 33.06
+    },
+    {
+      "id": 79,
+      "name": "Chlorpromazine",
+      "mae": 33.15
+    },
+    {
+      "id": 27,
+      "name": "Isoniazid",
+      "mae": 33.43
+    },
+    {
+      "id": 63,
+      "name": "Dexamethasone Inj",
+      "mae": 34.52
+    }
+  ]
+}

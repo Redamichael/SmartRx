@@ -1,0 +1,121 @@
+id,name_english,name_amharic,generic_name,category,atc_code,strength,dosage_form,unit_price_etb,is_essential,requires_prescription,storage_condition,shelf_life_months
+1,Paracetamol,ፓራሲታሞል,Paracetamol,Analgesic,N02BE01,500mg,Tablet,3.5,True,False,Room temperature,24
+2,Paracetamol Syrup,ፓራሲታሞል ሲሮፕ,Paracetamol,Analgesic,N02BE01,125mg/5ml,Syrup,28.0,True,False,Room temperature,18
+3,Ibuprofen,አይቡፕሮፌን,Ibuprofen,NSAID,M01AE01,400mg,Tablet,5.5,True,False,Room temperature,24
+4,Diclofenac,ዲክሎፌናክ,Diclofenac sodium,NSAID,M01AB05,50mg,Tablet,4.0,True,False,Room temperature,24
+5,Diclofenac Injection,ዲክሎፌናክ መርፌ,Diclofenac sodium,NSAID,M01AB05,75mg/3ml,Injection,35.0,True,True,Room temperature,12
+6,Aspirin,አስፒሪን,Acetylsalicylic acid,Analgesic,N02BA01,75mg,Tablet,2.5,True,False,Room temperature,24
+7,Tramadol,ትራማዶል,Tramadol HCl,Opioid Analgesic,N02AX02,50mg,Capsule,12.0,False,True,Room temperature,18
+8,Morphine,ሞርፊን,Morphine sulfate,Opioid Analgesic,N02AA01,10mg/ml,Injection,85.0,True,True,Room temperature,12
+9,Amoxicillin,አሞክሲሲሊን,Amoxicillin,Antibiotic,J01CA04,500mg,Capsule,8.0,True,False,Room temperature,18
+10,Amoxicillin Syrup,አሞክሲሲሊን ሲሮፕ,Amoxicillin,Antibiotic,J01CA04,125mg/5ml,Syrup,45.0,True,False,Room temperature,18
+11,Amoxicillin-Clav,አሞክሲ-ክላቭ,Amoxicillin+Clavulanate,Antibiotic,J01CR02,625mg,Tablet,35.0,True,False,Room temperature,24
+12,Azithromycin,አዚትሮማይሲን,Azithromycin,Antibiotic,J01FA10,500mg,Tablet,42.0,True,False,Room temperature,24
+13,Ciprofloxacin,ሲፕሮፍሎክሳሲን,Ciprofloxacin HCl,Antibiotic,J01MA02,500mg,Tablet,18.0,True,False,Room temperature,24
+14,Metronidazole,ሜትሮኒዳዞል,Metronidazole,Antibiotic,J01XD01,400mg,Tablet,4.5,True,False,Room temperature,24
+15,Metronidazole IV,ሜትሮኒዳዞል አይቪ,Metronidazole,Antibiotic,J01XD01,500mg/100ml,IV Bag,120.0,True,True,Refrigerate,12
+16,Doxycycline,ዶክሲሳይክሊን,Doxycycline HCl,Antibiotic,J01AA02,100mg,Capsule,7.5,True,False,Room temperature,18
+17,Erythromycin,ኤሪትሮማይሲን,Erythromycin,Antibiotic,J01FA01,500mg,Tablet,9.0,True,False,Room temperature,24
+18,Cotrimoxazole,ኮትሪሞክሳዞል,Sulfamethoxazole+Trimethoprim,Antibiotic,J01EE01,480mg,Tablet,3.0,True,False,Room temperature,24
+19,Gentamicin,ጀንታሚሲን,Gentamicin sulfate,Antibiotic,J01GB03,80mg/2ml,Injection,25.0,True,True,Room temperature,12
+20,Ceftriaxone,ሴፍትሪያክሶን,Ceftriaxone sodium,Antibiotic,J01DD04,1g,Injection,95.0,True,True,Room temperature,12
+21,Clindamycin,ክሊንዳሚሲን,Clindamycin HCl,Antibiotic,J01FF01,300mg,Capsule,22.0,True,False,Room temperature,18
+22,Tetracycline,ቴትራሳይክሊን,Tetracycline HCl,Antibiotic,J01AA07,250mg,Capsule,4.0,True,False,Room temperature,18
+23,Artemether-Lume,አርቴሜተር-ሉሜ,Artemether+Lumefantrine,Antimalarial,P01BF01,20/120mg,Tablet,75.0,True,False,Room temperature,24
+24,Chloroquine,ክሎሮኩዊን,Chloroquine phosphate,Antimalarial,P01BA01,250mg,Tablet,5.0,True,False,Room temperature,24
+25,Quinine,ኩዊኒን,Quinine sulfate,Antimalarial,P01BC01,300mg,Tablet,6.5,True,False,Room temperature,24
+26,Rifampicin,ሪፋምፒሲን,Rifampicin,Anti-TB,J04AB02,600mg,Capsule,45.0,True,True,Room temperature,18
+27,Isoniazid,አይሶኒያዚድ,Isoniazid,Anti-TB,J04AC01,300mg,Tablet,8.0,True,True,Room temperature,24
+28,Ethambutol,ኤታምቡቶል,Ethambutol HCl,Anti-TB,J04AK02,400mg,Tablet,12.0,True,True,Room temperature,24
+29,Pyrazinamide,ፒራዚናሚድ,Pyrazinamide,Anti-TB,J04AK01,500mg,Tablet,10.0,True,True,Room temperature,24
+30,Tenofovir-Lamivu,ቴኖፎቪር-ላሚቩ,TDF+3TC,ARV,J05AR08,300/300mg,Tablet,120.0,True,True,Room temperature,24
+31,Efavirenz,ኤፋቪሬንዝ,Efavirenz,ARV,J05AG03,600mg,Tablet,95.0,True,True,Room temperature,24
+32,Lopinavir-Ritonavir,ሎፒናቪር-ሪቶናቪር,LPV/r,ARV,J05AR10,200/50mg,Tablet,145.0,True,True,Room temperature,24
+33,Fluconazole,ፍሉኮናዞል,Fluconazole,Antifungal,J02AC01,150mg,Capsule,28.0,True,False,Room temperature,18
+34,Griseofulvin,ግሪሴኦፉልቪን,Griseofulvin,Antifungal,D01AA08,500mg,Tablet,18.0,False,False,Room temperature,24
+35,Ketoconazole,ኬቶኮናዞል,Ketoconazole,Antifungal,J02AB02,200mg,Tablet,22.0,False,False,Room temperature,24
+36,Metformin,ሜትፎርሚን,Metformin HCl,Antidiabetic,A10BA02,500mg,Tablet,6.0,True,False,Room temperature,24
+37,Glibenclamide,ግሊቤንክላሚድ,Glibenclamide,Antidiabetic,A10BB01,5mg,Tablet,4.5,True,False,Room temperature,24
+38,Insulin Regular,ኢንሱሊን ሬጉላር,Insulin human,Antidiabetic,A10AB01,100IU/ml,Vial,185.0,True,False,Refrigerate,12
+39,Insulin NPH,ኢንሱሊን ኤንፒኤች,Insulin isophane,Antidiabetic,A10AC01,100IU/ml,Vial,185.0,True,False,Refrigerate,12
+40,Amlodipine,አምሎዲፒን,Amlodipine besylate,Antihypertensive,C08CA01,5mg,Tablet,8.5,True,False,Room temperature,24
+41,Enalapril,ኢናላፕሪል,Enalapril maleate,Antihypertensive,C09AA02,5mg,Tablet,7.0,True,False,Room temperature,24
+42,Hydrochlorothiazide,ሃይድሮክሎሮቲያዚድ,Hydrochlorothiazide,Diuretic,C03AA03,25mg,Tablet,3.5,True,False,Room temperature,24
+43,Atenolol,አቴኖሎል,Atenolol,Beta-blocker,C07AB03,50mg,Tablet,5.0,True,False,Room temperature,24
+44,Nifedipine,ኒፌዲፒን,Nifedipine,Antihypertensive,C08CA05,10mg,Capsule,6.0,True,False,Room temperature,18
+45,Furosemide,ፉሮሴሚድ,Furosemide,Diuretic,C03CA01,40mg,Tablet,3.5,True,False,Room temperature,24
+46,Furosemide Inj,ፉሮሴሚድ መርፌ,Furosemide,Diuretic,C03CA01,20mg/2ml,Injection,18.0,True,True,Room temperature,12
+47,Digoxin,ዲጎክሲን,Digoxin,Cardiac glycoside,C01AA05,0.25mg,Tablet,5.5,True,False,Room temperature,24
+48,Propranolol,ፕሮፕራኖሎል,Propranolol HCl,Beta-blocker,C07AA05,40mg,Tablet,4.5,True,False,Room temperature,24
+49,ORS,ኦአርኤስ,Oral Rehydration Salts,GI,A07CA,20.5g,Sachet,5.0,True,False,Room temperature,12
+50,Zinc Sulfate,ዚንክ ሰልፌት,Zinc sulfate,GI / Supplement,A12CB01,20mg,Tablet,4.0,True,False,Room temperature,24
+51,Omeprazole,ኦሜፕራዞል,Omeprazole,PPI,A02BC01,20mg,Capsule,12.0,True,False,Room temperature,18
+52,Ranitidine,ራኒቲዲን,Ranitidine HCl,H2 blocker,A02BA02,150mg,Tablet,6.0,True,False,Room temperature,24
+53,Metoclopramide,ሜቶክሎፕራሚድ,Metoclopramide HCl,Antiemetic,A03FA01,10mg,Tablet,4.5,True,False,Room temperature,24
+54,Loperamide,ሎፔራሚድ,Loperamide HCl,Antidiarrhoeal,A07DA03,2mg,Capsule,5.0,True,False,Room temperature,18
+55,Antacid,አንታሲድ,Aluminium hydroxide+Mg,Antacid,A02AA04,200/200mg,Tablet,3.0,False,False,Room temperature,24
+56,Bisacodyl,ቢሳኮዲል,Bisacodyl,Laxative,A06AB02,5mg,Tablet,4.0,False,False,Room temperature,24
+57,Salbutamol Inhaler,ሳልቡታሞል ኢንሃለር,Salbutamol,Bronchodilator,R03AC02,100mcg,Inhaler,95.0,True,False,Room temperature,12
+58,Salbutamol Syrup,ሳልቡታሞል ሲሮፕ,Salbutamol,Bronchodilator,R03AC02,2mg/5ml,Syrup,45.0,True,False,Room temperature,18
+59,Beclomethasone Inh,ቤክሎሜታዞን ኢንሃለር,Beclomethasone,Corticosteroid,R03BA01,250mcg,Inhaler,185.0,True,False,Room temperature,12
+60,Theophylline,ቴዎፊሊን,Theophylline,Bronchodilator,R03DA04,200mg,Tablet,8.0,True,False,Room temperature,24
+61,Prednisolone,ፕሬድኒሶሎን,Prednisolone,Corticosteroid,H02AB06,5mg,Tablet,5.0,True,False,Room temperature,24
+62,Dexamethasone,ዴክሳሜታዞን,Dexamethasone,Corticosteroid,H02AB02,4mg,Tablet,4.5,True,False,Room temperature,24
+63,Dexamethasone Inj,ዴክሳሜታዞን መርፌ,Dexamethasone,Corticosteroid,H02AB02,8mg/2ml,Injection,28.0,True,True,Room temperature,12
+64,Vitamin A,ቪታሚን ኤ,Retinol,Vitamin,A11CA01,"200,000IU",Capsule,5.0,True,False,Room temperature,18
+65,Folic Acid,ፎሊክ አሲድ,Folic acid,Vitamin,B03BB01,5mg,Tablet,2.5,True,False,Room temperature,24
+66,Vitamin B Complex,ቪታሚን ቢ ኮምፕሌክስ,B-complex vitamins,Vitamin,A11BA,standard,Tablet,3.5,False,False,Room temperature,24
+67,Ferrous Sulfate,ፌሮስ ሰልፌት,Ferrous sulfate,Iron supplement,B03AA07,200mg,Tablet,3.0,True,False,Room temperature,24
+68,Calcium Carbonate,ካልሲየም ካርቦኔት,Calcium carbonate,Mineral,A12AA04,500mg,Tablet,5.0,False,False,Room temperature,24
+69,Albendazole,አልቤንዳዞል,Albendazole,Anthelmintic,P02CA03,400mg,Tablet,8.0,True,False,Room temperature,24
+70,Mebendazole,ሜቤንዳዞል,Mebendazole,Anthelmintic,P02CA01,500mg,Tablet,6.0,True,False,Room temperature,24
+71,Praziquantel,ፕራዚኩዋንቴል,Praziquantel,Anthelmintic,P02BA01,600mg,Tablet,22.0,True,False,Room temperature,24
+72,Permethrin Cream,ፐርሜትሪን ክሬም,Permethrin,Antiparasitic,P03AC04,5%,Cream,65.0,False,False,Room temperature,12
+73,Phenobarbital,ፌኖባርቢታል,Phenobarbital,Antiepileptic,N03AA02,100mg,Tablet,5.5,True,True,Room temperature,24
+74,Carbamazepine,ካርባማዜፒን,Carbamazepine,Antiepileptic,N03AF01,200mg,Tablet,8.0,True,True,Room temperature,24
+75,Valproic Acid,ቫልፕሮኢክ አሲድ,Valproate sodium,Antiepileptic,N03AG01,500mg,Tablet,18.0,True,True,Room temperature,24
+76,Diazepam,ዲያዜፓም,Diazepam,Anxiolytic,N05BA01,5mg,Tablet,4.0,True,False,Room temperature,24
+77,Diazepam Inj,ዲያዜፓም መርፌ,Diazepam,Anxiolytic,N05BA01,10mg/2ml,Injection,22.0,True,True,Room temperature,12
+78,Haloperidol,ሃሎፔሪዶል,Haloperidol,Antipsychotic,N05AD01,5mg,Tablet,7.0,True,True,Room temperature,24
+79,Chlorpromazine,ክሎርፕሮማዚን,Chlorpromazine HCl,Antipsychotic,N05AA01,100mg,Tablet,6.5,True,True,Room temperature,24
+80,Amitriptyline,አሚትሪፕቲሊን,Amitriptyline HCl,Antidepressant,N06AA09,25mg,Tablet,5.0,True,True,Room temperature,24
+81,Tetracycline Eye,ቴትራሳይክሊን ዓይን,Tetracycline,Ophthalmic,S01AA09,1%,Eye Oint,28.0,True,False,Room temperature,12
+82,Chloramphenicol Eye,ክሎራምፌኒኮል ዓይን,Chloramphenicol,Ophthalmic,S01AA01,0.5%,Eye Drop,25.0,True,False,Room temperature,12
+83,Tropicamide,ትሮፒካሚድ,Tropicamide,Ophthalmic,S01FA06,1%,Eye Drop,45.0,False,False,Room temperature,12
+84,Hydrocortisone Cream,ሃይድሮኮርቲዞን ክሬም,Hydrocortisone,Dermatological,D07AA02,1%,Cream,35.0,True,False,Room temperature,12
+85,Gentian Violet,ጀንሺያን ቫዮሌት,Crystal violet,Antiseptic,D08AJ01,0.5%,Solution,18.0,True,False,Room temperature,12
+86,Povidone Iodine,ፖቪዶን አዮዲን,Povidone-iodine,Antiseptic,D08AG02,10%,Solution,32.0,True,False,Room temperature,12
+87,Calamine Lotion,ካላሚን ሎሽን,Calamine,Dermatological,D04,15%,Lotion,28.0,False,False,Room temperature,12
+88,Oxytocin,ኦክሲቶሲን,Oxytocin,Uterotonic,H01BB02,10IU/ml,Injection,35.0,True,True,Room temperature,12
+89,Magnesium Sulfate,ማግኒዚየም ሰልፌት,Magnesium sulfate,Eclampsia Rx,A12CC02,50%,Injection,55.0,True,True,Room temperature,12
+90,Combined OCP,ተቀናጅቶ የወሊድ ቁጥጥር,Ethinyl Estradiol+Levonorgestrel,Contraceptive,G03AA07,30/150mcg,Tablet,8.0,True,False,Room temperature,24
+91,Medroxyprogesterone,ሜድሮክሲ ፕሮጅስቴሮን,Medroxyprogesterone,Injectable Contraceptive,G03AC06,150mg/ml,Injection,45.0,True,True,Room temperature,12
+92,Oral Rehydration Salts Low-Os,ኦአርኤስ ሎ-ኦስ,ORS low osmolarity,GI,A07CA,20g,Sachet,6.0,True,False,Room temperature,12
+93,Normal Saline 0.9%,ኖርማል ሴላይን,Sodium Chloride 0.9%,IV Fluid,B05CB01,500ml,IV Bag,65.0,True,True,Refrigerate,12
+94,Ringer's Lactate,ሪንገርስ ላክቴት,Lactated Ringer's,IV Fluid,B05BB01,500ml,IV Bag,70.0,True,True,Refrigerate,12
+95,Dextrose 5%,ዴክስትሮዝ 5%,Glucose 5%,IV Fluid,B05BA03,500ml,IV Bag,65.0,True,True,Refrigerate,12
+96,Dextrose 50%,ዴክስትሮዝ 50%,Glucose 50%,IV Fluid,B05BA03,50ml,IV Bag,45.0,True,True,Refrigerate,12
+97,Ketamine,ኬታሚን,Ketamine HCl,Anaesthetic,N01AX03,500mg/10ml,Injection,185.0,True,True,Room temperature,12
+98,Lidocaine,ሊዶካይን,Lidocaine HCl,Local Anaesthetic,N01BB02,2%,Injection,35.0,True,True,Room temperature,12
+99,Adrenaline,አድሬናሊን,Epinephrine,Emergency,C01CA24,1mg/ml,Injection,28.0,True,True,Room temperature,12
+100,Atropine,አትሮፒን,Atropine sulfate,Anticholinergic,A03BA01,0.5mg/ml,Injection,22.0,True,True,Room temperature,12
+101,Chlorphenamine,ክሎርፌናሚን,Chlorphenamine maleate,Antihistamine,R06AB02,4mg,Tablet,3.5,True,False,Room temperature,24
+102,Cetirizine,ሴቲሪዚን,Cetirizine HCl,Antihistamine,R06AE07,10mg,Tablet,8.0,False,False,Room temperature,24
+103,Multivitamin,ሙልቲቪታሚን,Multivitamin,Supplement,A11AA03,standard,Tablet,4.5,False,False,Room temperature,24
+104,Vitamin C,ቪታሚን ሲ,Ascorbic acid,Vitamin,A11GA01,500mg,Tablet,4.0,False,False,Room temperature,24
+105,Heparin,ሄፓሪን,Heparin sodium,Anticoagulant,B01AB01,5000IU/ml,Injection,95.0,True,True,Room temperature,12
+106,Warfarin,ዋርፋሪን,Warfarin sodium,Anticoagulant,B01AA03,5mg,Tablet,12.0,True,False,Room temperature,24
+107,Atorvastatin,አቶርቫስታቲን,Atorvastatin calcium,Statin,C10AA05,20mg,Tablet,22.0,True,False,Room temperature,24
+108,Simvastatin,ሲምቫስታቲን,Simvastatin,Statin,C10AA01,20mg,Tablet,18.0,True,False,Room temperature,24
+109,Loratadine,ሎራታዲን,Loratadine,Antihistamine,R06AX13,10mg,Tablet,9.0,False,False,Room temperature,24
+110,Nystatin,ናይስታቲን,Nystatin,Antifungal,A07AA02,"500,000IU",Tablet,8.0,True,False,Room temperature,24
+111,Acyclovir,አሲክሎቪር,Acyclovir,Antiviral,J05AB01,200mg,Tablet,15.0,True,False,Room temperature,24
+112,Methotrexate,ሜቶትሬክሳት,Methotrexate,Antineoplastic,L01BA01,2.5mg,Tablet,35.0,False,False,Room temperature,24
+113,Allopurinol,አሎፑሪኖል,Allopurinol,Gout,M04AA01,300mg,Tablet,8.0,False,False,Room temperature,24
+114,Levothyroxine,ሌቮቲሮክሲን,Levothyroxine sodium,Thyroid,H03AA01,100mcg,Tablet,12.0,True,False,Room temperature,24
+115,Glipizide,ግሊፒዚድ,Glipizide,Antidiabetic,A10BB07,5mg,Tablet,9.0,False,False,Room temperature,24
+116,Spironolactone,ስፒሮኖላክቶን,Spironolactone,Diuretic,C03DA01,25mg,Tablet,10.0,False,False,Room temperature,24
+117,Pyridoxine,ፒሪዶክሲን,Pyridoxine HCl,Vitamin,A11HA02,25mg,Tablet,3.5,True,False,Room temperature,24
+118,Clotrimazole,ክሎትሪማዞል,Clotrimazole,Antifungal,D01AC01,1%,Cream,35.0,False,False,Room temperature,12
+119,Betamethasone Cream,ቤታሜታዞን ክሬም,Betamethasone,Dermatological,D07AC01,0.1%,Cream,48.0,False,False,Room temperature,12
+120,Sodium Bicarbonate,ሶዲየም ባይካርቦኔት,Sodium bicarbonate,Antacid / IV,B05XA02,8.4%,Injection,38.0,True,True,Room temperature,12
