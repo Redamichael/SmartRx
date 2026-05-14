@@ -8,7 +8,7 @@ import json
 from pathlib import Path
 from contextlib import contextmanager
 
-DB_PATH = Path(r"C:\Users\RedaM\OneDrive - Ethio Telecom\Desktop\Smart pharmacy\SmartRx_AI\smartrx_demo.db")
+DB_PATH = Path(r"C:\Users\RedaM\SmartRx\smartrx_demo.db")
 
 
 def _row_factory(cursor, row):
